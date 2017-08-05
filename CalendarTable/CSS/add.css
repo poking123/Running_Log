@@ -1,0 +1,74 @@
+html, body, h1, h2, h3, h4, h6 ul, ol, li, p, a {
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+
+body {
+    background-image: url(images/handmadepaper.png);
+    background-repeat: repeat;
+    background-position: top center;
+
+}
+
+#logo {
+    display: block;
+    margin: 1% auto;
+    border-radius: 10%;
+    margin-bottom: 1%;
+    border: 1px solid black;
+}
+
+#pace {
+    width: 300px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background: black;
+}
+
+li {
+    display: inline;
+}
+
+li a {
+    text-decoration: none;
+    font-size: 28px;
+    padding: 14px 16px;
+    color: lightblue;
+}
+
+li a:hover {
+    color: deepskyblue;
+}
+
+.vertical_line {
+    border-right: 1px solid darkblue;
+    width:15%;
+    height:100%;
+    float:left;
+}
+
+b {
+    display: block;
+}
+
+input {
+    display: inline;
+    padding: 0;
+}
+
+select {
+    display: inline;
+    padding:0;
+    margin:0;
+}
+
+input[type=submit] {
+    display:block;
+    margin-top:1%;
+}
+
