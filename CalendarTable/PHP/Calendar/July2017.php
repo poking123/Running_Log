@@ -4,7 +4,7 @@
 
 	<head>
 		<title>Running Log</title>
-		<link rel=stylesheet type=text/css href="../../table.css" />
+		<link rel=stylesheet type=text/css href="../../CSS/table.css" />
 	</head>
 
 	<body>
@@ -14,14 +14,15 @@
             $userid = $_SESSION["userid"];
         ?>
         
-		<a href="../Viewers/CalendarViewer.php"><img id=logo src="../../images/ablogo2.png"/></a>
-
+        <div id=logoContainer>
+		<a href="../Viewers/CalendarViewer.php"><img class=logo src="../../images/ablogo2.png"/></a>
+        </div>
 		
 
 		<ul class=menu>
-			<li><a href=July2017.php>Home</a></li>
-			<li><a href=add.php>Add A Run</a></li>
-            <li><a href=logout.php>Logout</a></li>
+			<li><a href=../Viewers/CalendarViewer.php>Home</a></li>
+			<li><a href=../Calendar/add.php>Add A Run</a></li>
+            <li><a href=../Login-account/logout.php>Logout</a></li>
 		</ul>
         
         

@@ -9,10 +9,11 @@
 <html>
 <head>
     <title>Add Runs</title>
-    <link rel=stylesheet type=text/css href="../../add.css" />
+    <link rel=stylesheet type=text/css href="../../CSS/add.css" />
 </head>
 
-<body>
+<body style="background-image: url(../../images/handmadepaper.png); background-repeat: repeat;
+    background-position: top center;">
         <a href="../Viewers/CalendarViewer.php"><img id=logo src="../../images/ablogo2.png"/></a>
         
     <ul>
@@ -517,7 +518,7 @@
       
       if ($ok) {
           $db = mysqli_connect("localhost", "root", "", "running_log");
-          $sql = sprintf("INSERT INTO runs (title, month, day, year, Date, Distance2, hours, minutes, seconds, Time, shoes, userid, username)
+          $sql = sprintf("INSERT INTO runs (title, month, day, year, Date, Distance, hours, minutes, seconds, Time, shoes, userid, username)
           VALUES ('%s', '%d', '%d', '%d', '%s', '%f', '%d', '%d', '%d', '%s', '%s', '%d', '%s')",
                         mysqli_real_escape_string($db, $title),
                         $month,

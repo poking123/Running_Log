@@ -16,7 +16,7 @@
         
         if (isset($_POST["username"]) && $_POST["username"] != "" && 
             isset($_POST["password"]) && $_POST["password"] != "") {
-            $username = $_POST["username"];
+            $username = ucwords(strtolower($_POST["username"]));
             $db = mysqli_connect("localhost", "root", "", "running_log");
             $sql = sprintf("SELECT * FROM users WHERE username='%s'",
                     mysqli_real_escape_string($db, $_POST["username"]));
@@ -45,7 +45,7 @@
 
     <head>
         <title>Running Log</title>
-        <link rel=stylesheet type=text/css href="../../table.css" />
+        <link rel=stylesheet type=text/css href="../../CSS/table.css" />
     </head>
     
     
@@ -56,7 +56,9 @@
             echo "<p>$message</p>";
         ?>
         
-        <a href="../Viewers/CalendarViewer.php"><img id=logo src="../../images/ablogo2.png"></a>
+        <div id=logoContainer>
+        <a href="../Viewers/CalendarViewer.php"><img class=logo src="../../images/ablogo2.png"></a>
+        </div>
         
         <ul class=menu>
             <li><a href=../Viewers/CalendarViewer.php>Home</a></li>
@@ -64,17 +66,19 @@
         </ul>
         
         <form method=post action="">
-        <br>
-            <p style="margin-left: 40%;">Please Login Here!</p> <br><br>
-        <p style="margin-left: 40%;">Username:</p> <input style="margin-left: 40%;" type=text name=username value="<?php
-            echo htmlspecialchars($username);
-        ?>"> 
-        <span style="color:red;"><?php echo $usernameError;?></span>
-        <br><br>
-        <p style="margin-left: 40%;">Password:</p> <input style="margin-left: 40%;" type=password name=password>
-        <span style="color:red;"><?php echo $passwordError;?></span>  
-        <br><br>
-        <input style="margin-left: 40%;" type=submit name=submit value="Let's Get it!">
+            <br>
+            <p class=login>Please Login Here!</p> <br>
+            <p class=login>Don't have an account? <a href="CreateAccount.php">Click Here to Make a Free Account</a></p> <br><br>
+
+            <p class=login>Username:</p> <input class=login type=text name=username value="<?php
+                echo ucwords(strtolower(htmlspecialchars($username)));
+            ?>"> 
+            <span style="color:red;"><?php echo $usernameError;?></span>
+            <br><br>
+            <p class=login>Password:</p> <input style="margin-left: 40%;" type=password name=password>
+            <span style="color:red;"><?php echo $passwordError;?></span>  
+            <br><br>
+            <input class=login type=submit name=submit value="Let's Get it!">
         </form>
     
     </body>

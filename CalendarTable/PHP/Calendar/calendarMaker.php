@@ -12,6 +12,7 @@ $dayNumber = date('N');
 $totalDays = date('t');
 $day = date('j');
 $month = date('F');
+$monthNumber = date('n');
 $year = date('Y');
 $combined = $month.$year;
 $final = $combined.".php";
@@ -20,7 +21,7 @@ fwrite($file, "<!DOCTYPE html5>");
 fwrite($file, "\n\n<html>");
 fwrite($file, "\n\n\t<head>");
 fwrite($file, "\n\t\t<title>Running Log</title>");
-fwrite($file, "\n\t\t<link rel=stylesheet type=text/css href=\"../../table.css\" />");
+fwrite($file, "\n\t\t<link rel=stylesheet type=text/css href=\"../../CSS/table.css\" />");
 fwrite($file, "\n\t</head>");
 fwrite($file, "\n\n\t<body>");
 fwrite($file, "\n\t\t<?php");
@@ -28,11 +29,13 @@ fwrite($file, "\n\t\t\trequire \"../Login-account/auth.php\";");
 fwrite($file, "\n\t\t\t\$username = \$_SESSION[\"username\"];");
 fwrite($file, "\n\t\t\t\$userid = \$_SESSION[\"userid\"];");
 fwrite($file, "\n\t\t?>");
-fwrite($file, "\n\t\t<a href=\"".$final."\"><img id=logo src=\"../../images/ablogo2.png\"/></a>");
+fwrite($file, "\n\n\t\t<div id=logoContainer>");
+fwrite($file, "\n\t\t<a href=\"../Viewers/CalendarViewer.php\"><img class=logo src=\"../../images/ablogo2.png\"/></a>");
+fwrite($file, "\n\t\t</div>");
 fwrite($file, "\n\n\t\t<ul class=menu>");
-fwrite($file, "\n\t\t\t<li><a href=".$final.">Home</a></li>");
-fwrite($file, "\n\t\t\t<li><a href=add.php>Add A Run</a></li>");
-fwrite($file, "\n\t\t\t<li><a href=logout.php>Logout</a></li>");
+fwrite($file, "\n\t\t\t<li><a href=../Viewers/CalendarViewer.php>Home</a></li>");
+fwrite($file, "\n\t\t\t<li><a href=../Calendar/add.php>Add A Run</a></li>");
+fwrite($file, "\n\t\t\t<li><a href=../Login-account/logout.php>Logout</a></li>");
 fwrite($file, "\n\t\t</ul>");
 fwrite($file, "\n\n\t\t<ul class=back>");
 if ($month == 1) {
@@ -48,20 +51,24 @@ if ($month == 12) {
 
 fwrite($file, "\n\t\t</ul>");
 fwrite($file, "\n\n\t\t<?php");
-fwrite($file, "\n\t\t\tfunction checkDatabase(\$day) {");
+fwrite($file, "\n\t\t\tfunction checkDatabase(\$year,\$month,\$day) {");
 fwrite($file, "\n\t\t\t\t\$userid = \$_SESSION[\"userid\"];");
-fwrite($file, "\n\t\t\t\t\$month = \$_SESSION[\"month\"];");
 fwrite($file, "\n\t\t\t\t\$db = mysqli_connect(\"localhost\", \"root\", \"\", \"running_log\");");
-fwrite($file, "\n\t\t\t\t\$sql = sprintf(\"SELECT * FROM runs WHERE Userid='%f' AND Month='%f' AND Day='%f'\",                     
+fwrite($file, "\n\t\t\t\t\$sql = sprintf(\"SELECT * FROM runs WHERE Userid='%d' AND Year='%d' AND Month='%d' AND Day='%d'\",
                                \$userid,
-                               \$day,
-                               \$month);");
+                               \$year,
+                               \$month,
+                               \$day);");
 fwrite($file, "\n\t\t\t\t\$result = mysqli_query(\$db, \$sql);");
 fwrite($file, "\n\t\t\t\t\$row = mysqli_fetch_assoc(\$result);");
 fwrite($file, "\n\t\t\t\tif (\$row) {");
-fwrite($file, "\n\n\t\t\t\t\techo \"style=\\\"cursor:pointer\\\" onclick=\\\"location.href='RunViewer.php'\\\" class=changeCellColor\";");
+fwrite($file, "\n\t\t\t\t\tif (date('j') == \$day) {");
+fwrite($file, "\n\t\t\t\t\t\techo \"style=\\\"cursor:pointer\\\" onclick=\\\"location.href='RunViewer.php/?year=\".\$year.\"&month=\".\$month.\"&day=\".\$day.\"'\\\" class=changeCellColorToday\";");
+fwrite($file, "\n\t\t\t\t\t} else {");
+fwrite($file, "\n\t\t\t\t\t\techo \"style=\\\"cursor:pointer\\\" onclick=\\\"location.href='RunViewer.php/?year=\".\$year.\"&month=\".\$month.\"&day=\".\$day.\"'\\\" class=changeCellColor\";");
+fwrite($file, "\n\t\t\t\t\t}");
 fwrite($file, "\n\n\t\t\t\t}");
-fwrite($file, "\n\n\t\t\t}");
+fwrite($file, "\n\t\t\t}");
 fwrite($file, "\n\n\t\t?>");
 fwrite($file, "\n\n\t\t<table>");
 fwrite($file, "\n\t\t\t<caption><?php echo \$_SESSION[\"username\"].\"'s\";?> ".$month." ".$year." Running Mileage</caption>");
@@ -78,8 +85,13 @@ fwrite($file, "\n\t\t\t<tr>");
 fwrite($file, "\n\t\t\t\t");
 for ($i = 1; $i <= 7; $i++) {
     if ($i >= $dayNumber) {
-        fwrite($file, "\n\t\t\t\t<td <?php\n\t\t\t\tif (date('j') == ".$dayCounter.") {
-        \t\t\t\techo \"class=ab\";\n\t\t\t\t}\n\t\t\t\tcheckDatabase(".$dayCounter.")\n\t\t\t?>>".$dayCounter."</td>");
+        fwrite($file, "\n\t\t\t\t<td <?php");
+        fwrite($file, "\n\t\t\t\tdate_default_timezone_set('America/Detroit');");
+        fwrite($file, "\n\t\t\t\tcheckDatabase(".$year.",".$monthNumber.",".$dayCounter.");");
+        fwrite($file, "\n\t\t\t\tif (date('j') == ".$dayCounter.") {");
+        fwrite($file, "\n\t\t\t\t\techo \" class=ab\";");
+        fwrite($file, "\n\t\t\t\t}");
+        fwrite($file, "\n\t\t\t?>>".$dayCounter."</td>");
         $dayCounter++;
     } else {
         fwrite($file, "\n\t\t\t\t<td></td>");
@@ -90,15 +102,17 @@ while ($dayCounter <= $totalDays) {
     if ($newRow % 7 == 1) {
         fwrite($file, "\n\t\t\t<tr>");
     }
-    fwrite($file, "\n\t\t\t\t<td <?php\n\t\t\t\tif (date('j') == ".$dayCounter.") {
-        \t\t\t\techo \"class=ab\";\n\t\t\t\t}\n\t\t\t\tcheckDatabase(".$dayCounter.")\n\t\t\t?>>".$dayCounter."</td>");
+    fwrite($file, "\n\t\t\t\t<td <?php\n\t\t\t\tdate_default_timezone_set('America/Detroit');");
+    fwrite($file, "\n\t\t\t\tcheckDatabase(".$year.",".$monthNumber.",".$dayCounter.");");
+    fwrite($file, "\n\t\t\t\tif (date('j') == ".$dayCounter.") {");
+    fwrite($file, "\n\t\t\t\t\techo \" class=ab\";");
+    fwrite($file, "\n\t\t\t\t}\n\t\t\t?>>".$dayCounter."</td>");
     $dayCounter++;
     $newRow++;
     if ($newRow % 7 == 1) {
         fwrite($file, "\n\t\t\t</tr>");
     }
 }
-//fwrite($file, "<td></td>");
 fwrite($file, "\n\t\t</table>");
 fwrite($file, "\n\n\t</body>");
 fwrite($file, "\n\n</html>");

@@ -1,5 +1,5 @@
 <?php
-    require "auth.php";
+    require "../Login-account/auth.php";
 //    $username = $_SESSION["username"];
 //    $userid = $_SESSION["userid"];
 ?>
@@ -9,26 +9,31 @@
 <html>
 <head>
     <title>Add Runs</title>
-    <link rel=stylesheet type=text/css href="add.css" />
+    <link rel=stylesheet type=text/css href="../../../CSS/add.css" />
 </head>
 
-<body>
-        <a href="CalendarViewer.php"><img id=logo src="images/ablogo2.png"/></a>
+<body style="background-image: url(../../../images/handmadepaper.png); background-repeat: repeat;
+    background-position: top center;">
+        <a href="CalendarViewer.php"><img id=logo src="../../../images/ablogo2.png"/></a>
         
     <ul>
-        <li><a href="CalendarViewer.php">Home</a></li>
-        <li><a href="add.php">Add A Run</a></li>
-        <li><a href=logout.php>Logout</a></li>
+        <li><a href="../CalendarViewer.php">Home</a></li>
+        <li><a href="../../Calendar/add.php">Add A Run</a></li>
+        <li><a href=../Login-account/logout.php>Logout</a></li>
     </ul>
     
     <?php
         
         function getFromDatabase($col) {
             $userid = $_SESSION["userid"];
-            $day = $_GET["day"];
+            $year = urldecode($_GET["year"]);
+            $month = urldecode($_GET["month"]);
+            $day = urldecode($_GET["day"]);
             $db = mysqli_connect("localhost", "root", "", "running_log");
-            $sql = sprintf("SELECT ".$col." FROM runs WHERE userid='%f' AND day='%f'",
+            $sql = sprintf("SELECT ".$col." FROM runs WHERE userid='%d' AND year='%d' AND month='%d' AND day='%d'",
                           $userid,
+                          $year,
+                          $month,
                           $day);
             $result = mysqli_query($db, $sql);
             $row = mysqli_fetch_assoc($result);
@@ -61,7 +66,7 @@
     <br><br>
     <p class=questions>Miles:</p>
     <input style="width: 60px; text-align:center;" type=text name=distance value="<?php 
-        echo getFromDatabase("Distance2") . " mi";               
+        echo getFromDatabase("Distance") . " mi";               
     ?>">
     
     <br><br>
@@ -89,7 +94,7 @@
     <br><br>
     <p class=questions>Pace:</p>
     <input style="width: 70px; text-align:center;" type=text value="<?php
-        $distance = getFromDatabase("Distance2");                                                            
+        $distance = getFromDatabase("Distance");                                                            
         $totalSeconds = getFromDatabase("Hours")*3600 + getFromDatabase("Minutes")*60 + getFromDatabase("Seconds");
         $secondsPerMile = $totalSeconds / $distance;                                                            
         $minutesPace = ($secondsPerMile)/60;
@@ -97,9 +102,10 @@
         $secondsPace = (($secondsPerMile / 60) - $fakeMinutesPace) * 60;
         echo intval($minutesPace) . ":";                                                                                                                     
         if ($secondsPace < 10) {
-            echo "0" . number_format($secondsPace, 2, ".", "");
+            echo "0" . round($secondsPace);
         } else {
-            echo number_format($secondsPace, 2, ".", "");
+//            echo number_format($secondsPace, 2, ".", "");
+            echo round($secondsPace);
         }                                                            
         echo "/mi";
     ?>"> 

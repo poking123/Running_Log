@@ -4,13 +4,14 @@
 
     <head>
         <title>Running Log</title>
-        <link rel=stylesheet type=text/css href="table.css" />
+        <link rel=stylesheet type=text/css href="../../CSS/table.css" />
     </head>
     
     <?php
         $ok = true;
         $username = "";
         $password = "";
+        $confirmPassword = "";
         $email = "";
         $address = "";
         $town = "";
@@ -20,6 +21,7 @@
     
         $usernameError = "";
         $passwordError = "";
+        $confirmPasswordError = "";
         $emailError = "";
         $addressError = "";
         $townError = "";
@@ -36,10 +38,18 @@
                 $ok = false;
                 $usernameError = "* Username is required.";
             } else {
-                $username = $_POST["username"];
+                $username = ucwords(strtolower(trim($_POST["username"])));
                 $db = mysqli_connect("localhost", "root", "", "running_log");
-                $sql = sprintf("SELECT userid FROM users WHERE username=".$username);
-                $userid = mysqli_query($db, $sql);
+                $sql = sprintf("SELECT * FROM users WHERE username='%s'",
+                              $username);
+                $result = mysqli_query($db, $sql);
+                if ($result) {
+                    $row = mysqli_fetch_assoc($result);
+                    $userid = $row["userid"];
+                } else {
+                    $userid = 0;
+                    echo "Got here";
+                }
                 if ($userid > 0) {
                     $usernameError = "* Username is already taken. Choose something else.";
                     $ok = false;
@@ -49,8 +59,19 @@
                 $ok = false;
                 $passwordError = "* Password is required.";
             } else {
-                    $password = $_POST["password"];
-                    $hash = password_hash($password, PASSWORD_DEFAULT);
+                if (!isset($_POST["confirmPassword"]) || $_POST["confirmPassword"] === "") {
+                    $ok = false;
+                    $confirmPasswordError = "* You need to confirm your password!";
+                } else {
+                    if ($_POST["confirmPassword"] != $_POST["password"]) {
+                        $ok = false;
+                        $confirmPasswordError = "* Passwords are not the same.";
+                    } else {
+                        $password = $_POST["password"];
+                        $hash = password_hash($password, PASSWORD_DEFAULT);
+                    }
+                }
+                    
             }
             if (!isset($_POST["email"]) || $_POST["email"] === "") {
                 $ok = false;
@@ -125,16 +146,23 @@
         ?>
     
     <body>
-        <a href="CalendarViewer.php"><img id=logo src="images/ablogo2.png"></a>
+        
+        <div id=logoContainer>
+        <a href="../Viewers/CalendarViewer.php"><img class=logo src="../../images/ablogo2.png"></a>
+        </div>
         
         <ul class=menu>
-            <li><a href=CalendarViewer.php>Home</a></li>
-            <li><a href=add.php>Add A Run</a></li>
+            <li><a href=../Viewers/CalendarViewer.php>Home</a></li>
+            <li><a href=../Calendar/add.php>Add A Run</a></li>
         </ul>
         
+        <div class=vertical_line>
+        
+        </div>
+            
         <form method=post action="">
             <br>
-            <p id=account onclick=thisFunction()>Make Your Account!</p>
+            <p onclick=thisFunction()>Make Your Account!</p>
             <script>
                 function thisFunction() {
                     document.getElementById('account').innerHTML = "oops";
@@ -142,7 +170,7 @@
                 
             </script>
             <br>
-            Username: <input type=text id=user onblur="checkDatabase()" name=username value="<?php 
+            <p>Username:</p> <input type=text id=user onblur="checkDatabase()" name=username value="<?php 
                 echo htmlspecialchars($username);    
             ?>">
             <script>
@@ -156,14 +184,21 @@
             ?>
             </span>
             <br><br>
-            Password: <input type=password name=password> 
+            <p>Password:</p> <input type=password name=password> 
             <span style="color: red;">
             <?php 
                 echo $passwordError;
             ?>
             </span>
             <br><br>
-            Email: <input type=text name=email value="<?php 
+            <p>Confirm Password:</p> <input type=password name=confirmPassword> 
+            <span style="color: red;">
+            <?php 
+                echo $confirmPasswordError;
+            ?>
+            </span>
+            <br><br>
+            <p>Email:</p> <input type=text name=email value="<?php 
                 echo htmlspecialchars($email);    
             ?>">
             <span style="color: red;">
@@ -172,7 +207,7 @@
             ?>
             </span>
             <br><br>
-            Address: <input type=text name=address value="<?php 
+            <p>Address:</p> <input type=text name=address value="<?php 
                 echo htmlspecialchars($address);    
             ?>">
             <span style="color: red;">
@@ -181,7 +216,7 @@
             ?>
             </span>
             <br><br>
-            Town: <input type=text name=town value="<?php 
+            <p>Town:</p> <input type=text name=town value="<?php 
                 echo htmlspecialchars($town);    
             ?>">
             <span style="color: red;">
@@ -190,7 +225,7 @@
             ?>
             </span>
             <br><br>
-            Country: <input type=text name=country value="<?php 
+            <p>Country:</p> <input type=text name=country value="<?php 
                 echo htmlspecialchars($country);    
             ?>">
             <span style="color: red;">
@@ -199,7 +234,7 @@
             ?>
             </span>
             <br><br>
-            Social Security Number: <input type=text name=ssn value="<?php 
+            <p>Social Security Number:</p> <input maxlength="9" style="width: 71.5px;" type=text name=ssn value="<?php 
                 echo htmlspecialchars($ssn);    
             ?>">
             <span style="color: red;">
@@ -208,7 +243,7 @@
             ?>
             </span>
             <br><br>
-            Bank Pin: <input type=text name=bankpin value="<?php 
+            <p>Bank Pin:</p> <input maxlength="4" style="width: 34.5px;" type=text name=bankpin value="<?php 
                 echo htmlspecialchars($bankpin);    
             ?>">
             <span style="color: red;">
